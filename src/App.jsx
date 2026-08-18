@@ -379,6 +379,35 @@ const filteredApplications = applications
 >
   Clear Filters
 </button>
+<button
+  type="button"
+  onClick={() => {
+    const headers = ['Company', 'Role', 'Status', 'Applied Date']
+
+    const rows = applications.map((application) => [
+      application.company,
+      application.role,
+      application.status,
+      application.appliedDate,
+    ])
+
+    const csv = [headers, ...rows]
+      .map((row) => row.map((value) => `"${value}"`).join(','))
+      .join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = 'job-applications.csv'
+    link.click()
+
+    URL.revokeObjectURL(url)
+  }}
+>
+  Export CSV
+</button>
 <select
   value={sortOrder}
   onChange={(event) => setSortOrder(event.target.value)}
