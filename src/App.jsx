@@ -33,10 +33,11 @@ const emptyForm = {
 }
 
 function App() {
-  const [applications, setApplications] = useState(initialApplications)
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState(emptyForm)
-  const [error, setError] = useState('')
+ const [applications, setApplications] = useState(initialApplications)
+ const [showForm, setShowForm] = useState(false)
+ const [form, setForm] = useState(emptyForm)
+ const [error, setError] = useState('')
+ const [editingId, setEditingId] = useState(null)
 
   const totalApplications = applications.length
 
@@ -92,7 +93,42 @@ function App() {
     setError('')
     setShowForm(false)
   }
+function handleEdit(application) {
+  setEditingId(application.id)
+  setForm({
+    company: application.company,
+    role: application.role,
+    status: application.status,
+    appliedDate: application.appliedDate,
+  })
+  setError('')
+  }
+  function handleUpdate(event) {
+  event.preventDefault()
 
+  if (!form.company.trim() || !form.role.trim() || !form.appliedDate) {
+    setError('Please complete all required fields.')
+    return
+  }
+
+  setApplications((currentApplications) =>
+    currentApplications.map((application) =>
+      application.id === editingId
+        ? {
+            ...application,
+            company: form.company.trim(),
+            role: form.role.trim(),
+            status: form.status,
+            appliedDate: form.appliedDate,
+          }
+        : application
+    )
+  )
+
+  setEditingId(null)
+  setForm(emptyForm)
+  setError('')
+}
   return (
     <main className="app">
       <header className="header">
@@ -139,7 +175,7 @@ function App() {
         </div>
 
         {showForm && (
-          <form className="application-form" onSubmit={handleSubmit}>
+  <form className="application-form" onSubmit={handleSubmit}>
             <h2>Add Application</h2>
 
             <div className="form-grid">
@@ -209,6 +245,81 @@ function App() {
         )}
 
         <div className="application-list">
+          {editingId !== null && (
+  <form className="application-form" onSubmit={handleUpdate}>
+    <h2>Edit Application</h2>
+
+    <div className="form-grid">
+      <label>
+        Company
+        <input
+          name="company"
+          type="text"
+          value={form.company}
+          onChange={handleInputChange}
+          required
+        />
+      </label>
+
+      <label>
+        Job Role
+        <input
+          name="role"
+          type="text"
+          value={form.role}
+          onChange={handleInputChange}
+          required
+        />
+      </label>
+
+      <label>
+        Status
+        <select
+          name="status"
+          value={form.status}
+          onChange={handleInputChange}
+        >
+          <option value="Applied">Applied</option>
+          <option value="Interview">Interview</option>
+          <option value="Offer">Offer</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </label>
+
+      <label>
+        Applied Date
+        <input
+          name="appliedDate"
+          type="date"
+          value={form.appliedDate}
+          onChange={handleInputChange}
+          required
+        />
+      </label>
+    </div>
+
+    {error && (
+      <p className="form-error" role="alert">
+        {error}
+      </p>
+    )}
+
+    <div className="form-actions">
+      <button
+        type="button"
+        onClick={() => {
+          setEditingId(null)
+          setForm(emptyForm)
+          setError('')
+        }}
+      >
+        Cancel
+      </button>
+
+      <button type="submit">Save Changes</button>
+    </div>
+  </form>
+)}
           {applications.map((application) => (
             <article className="application-card" key={application.id}>
               <div>
@@ -217,16 +328,23 @@ function App() {
               </div>
 
               <div className="application-details">
-                <span
-                  className={`status ${application.status.toLowerCase()}`}
-                >
-                  {application.status}
-                </span>
+  <span
+    className={`status ${application.status.toLowerCase()}`}
+  >
+    {application.status}
+  </span>
 
-                <time dateTime={application.appliedDate}>
-                  {application.appliedDate}
-                </time>
-              </div>
+  <time dateTime={application.appliedDate}>
+    {application.appliedDate}
+  </time>
+
+  <button
+    type="button"
+    onClick={() => handleEdit(application)}
+  >
+    Edit
+  </button>
+</div>
             </article>
           ))}
         </div>
