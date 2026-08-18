@@ -49,24 +49,33 @@ function App() {
   const [deletingId, setDeletingId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
-
+  const [sortOrder, setSortOrder] = useState('newest')
   useEffect(() => {
   localStorage.setItem('jobApplications', JSON.stringify(applications))
 }, [applications])
 
   const totalApplications = applications.length
-const filteredApplications = applications.filter((application) => {
-  const searchTerm = search.trim().toLowerCase()
+const filteredApplications = applications
+  .filter((application) => {
+    const searchTerm = search.trim().toLowerCase()
 
-const matchesSearch =
-  application.company.toLowerCase().includes(searchTerm) ||
-  application.role.toLowerCase().includes(searchTerm)
+    const matchesSearch =
+      application.company.toLowerCase().includes(searchTerm) ||
+      application.role.toLowerCase().includes(searchTerm)
 
-  const matchesStatus =
-    statusFilter === 'All' || application.status === statusFilter
+    const matchesStatus =
+      statusFilter === 'All' || application.status === statusFilter
 
-  return matchesSearch && matchesStatus
-})
+    return matchesSearch && matchesStatus
+  })
+  .sort((a, b) => {
+    const dateA = new Date(a.appliedDate)
+    const dateB = new Date(b.appliedDate)
+
+    return sortOrder === 'newest'
+      ? dateB - dateA
+      : dateA - dateB
+  })
   const interviews = applications.filter(
     (application) =>
       application.status.toLowerCase() === 'interview'
@@ -329,6 +338,15 @@ const matchesSearch =
   <option value="Interview">Interview</option>
   <option value="Offer">Offer</option>
   <option value="Rejected">Rejected</option>
+</select>
+
+<select
+  value={sortOrder}
+  onChange={(event) => setSortOrder(event.target.value)}
+  aria-label="Sort applications"
+>
+  <option value="newest">Newest First</option>
+  <option value="oldest">Oldest First</option>
 </select>
           {filteredApplications.map((application) => (
             <article
