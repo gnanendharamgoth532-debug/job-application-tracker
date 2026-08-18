@@ -54,6 +54,9 @@ function App() {
   useEffect(() => {
   localStorage.setItem('jobApplications', JSON.stringify(applications))
 }, [applications])
+useEffect(() => {
+  document.title = `${applications.length} Applications | Job Tracker`
+}, [applications])
 
   const totalApplications = applications.length
 const filteredApplications = applications
