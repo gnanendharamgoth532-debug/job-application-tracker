@@ -431,10 +431,11 @@ link.download = `job-applications-${date}.csv`
   </p>
 )}
           {filteredApplications.map((application) => (
-            <article
-              className="application-card"
-              key={application.id}
-            >
+           <article
+  className="application-card"
+  key={application.id}
+  aria-label={`${application.role} at ${application.company}`}
+>
               <div>
                 <h3>{application.role}</h3>
                 <p>{application.company}</p>
