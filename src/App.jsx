@@ -49,6 +49,7 @@ function App() {
   const [deletingId, setDeletingId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
+  const [dateFilter, setDateFilter] = useState('')
   const [sortOrder, setSortOrder] = useState('newest')
   useEffect(() => {
   localStorage.setItem('jobApplications', JSON.stringify(applications))
@@ -65,8 +66,10 @@ const filteredApplications = applications
 
     const matchesStatus =
       statusFilter === 'All' || application.status === statusFilter
+      const matchesDate =
+  dateFilter === '' || application.appliedDate === dateFilter
 
-    return matchesSearch && matchesStatus
+   return matchesSearch && matchesStatus
   })
   .sort((a, b) => {
     const dateA = new Date(a.appliedDate)
@@ -346,6 +349,12 @@ const filteredApplications = applications
   onChange={(event) => setSearch(event.target.value)}
   aria-label="Search applications"
 />
+<input
+  type="date"
+  aria-label="Filter applications by date"
+  onChange={(event) => setDateFilter(event.target.value)}
+/>
+
 
 <select
   value={statusFilter}
@@ -360,11 +369,12 @@ const filteredApplications = applications
 </select>
 <button
   type="button"
-  onClick={() => {
-    setSearch('')
-    setStatusFilter('All')
-    setSortOrder('newest')
-  }}
+ onClick={() => {
+  setSearch('')
+  setStatusFilter('All')
+  setDateFilter('')
+  setSortOrder('newest')
+}}
 >
   Clear Filters
 </button>
