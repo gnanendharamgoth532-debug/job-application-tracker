@@ -361,11 +361,11 @@ const interviewRate =
 />
 <input
   type="date"
+  name="application-date-filter"
   value={dateFilter}
   aria-label="Filter applications by date"
   onChange={(event) => setDateFilter(event.target.value)}
 />
-
 
 <select
   value={statusFilter}
