@@ -209,3 +209,19 @@ button {
     flex: 1;
   }
 }
+.delete-confirmation {
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+}
+
+.delete-confirmation p {
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.delete-confirmation > div {
+  display: flex;
+  gap: 8px;
+}

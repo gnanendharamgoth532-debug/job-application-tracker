@@ -4,22 +4,22 @@ import './App.css'
 const initialApplications = [
   {
     id: 1,
-    company: 'Microsoft',
     role: 'Frontend Developer',
+    company: 'Microsoft',
     status: 'Interview',
     appliedDate: '2026-08-10',
   },
   {
     id: 2,
-    company: 'Google',
     role: 'Software Engineer',
+    company: 'Google',
     status: 'Applied',
     appliedDate: '2026-08-12',
   },
   {
     id: 3,
-    company: 'Amazon',
     role: 'React Developer',
+    company: 'Amazon',
     status: 'Offer',
     appliedDate: '2026-08-05',
   },
@@ -33,20 +33,23 @@ const emptyForm = {
 }
 
 function App() {
- const [applications, setApplications] = useState(initialApplications)
- const [showForm, setShowForm] = useState(false)
- const [form, setForm] = useState(emptyForm)
- const [error, setError] = useState('')
- const [editingId, setEditingId] = useState(null)
+  const [applications, setApplications] = useState(initialApplications)
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState(emptyForm)
+  const [error, setError] = useState('')
+  const [editingId, setEditingId] = useState(null)
+  const [deletingId, setDeletingId] = useState(null)
 
   const totalApplications = applications.length
 
   const interviews = applications.filter(
-    (application) => application.status === 'Interview'
+    (application) =>
+      application.status.toLowerCase() === 'interview'
   ).length
 
   const offers = applications.filter(
-    (application) => application.status === 'Offer'
+    (application) =>
+      application.status.toLowerCase() === 'offer'
   ).length
 
   function handleInputChange(event) {
@@ -65,23 +68,45 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault()
 
-    if (!form.company.trim() || !form.role.trim() || !form.appliedDate) {
+    if (
+      !form.company.trim() ||
+      !form.role.trim() ||
+      !form.appliedDate
+    ) {
       setError('Please complete all required fields.')
       return
     }
 
-    const newApplication = {
-      id: Date.now(),
-      company: form.company.trim(),
-      role: form.role.trim(),
-      status: form.status,
-      appliedDate: form.appliedDate,
-    }
+    if (editingId !== null) {
+      setApplications((currentApplications) =>
+        currentApplications.map((application) =>
+          application.id === editingId
+            ? {
+                ...application,
+                company: form.company.trim(),
+                role: form.role.trim(),
+                status: form.status,
+                appliedDate: form.appliedDate,
+              }
+            : application
+        )
+      )
 
-    setApplications((currentApplications) => [
-      newApplication,
-      ...currentApplications,
-    ])
+      setEditingId(null)
+    } else {
+      const newApplication = {
+        id: Date.now(),
+        company: form.company.trim(),
+        role: form.role.trim(),
+        status: form.status,
+        appliedDate: form.appliedDate,
+      }
+
+      setApplications((currentApplications) => [
+        newApplication,
+        ...currentApplications,
+      ])
+    }
 
     setForm(emptyForm)
     setError('')
@@ -91,55 +116,50 @@ function App() {
   function handleCancel() {
     setForm(emptyForm)
     setError('')
+    setEditingId(null)
     setShowForm(false)
   }
-function handleEdit(application) {
-  setEditingId(application.id)
-  setForm({
-    company: application.company,
-    role: application.role,
-    status: application.status,
-    appliedDate: application.appliedDate,
-  })
-  setError('')
-  }
-  function handleUpdate(event) {
-  event.preventDefault()
 
-  if (!form.company.trim() || !form.role.trim() || !form.appliedDate) {
-    setError('Please complete all required fields.')
-    return
+  function handleEdit(application) {
+    setEditingId(application.id)
+
+    setForm({
+      company: application.company,
+      role: application.role,
+      status: application.status,
+      appliedDate: application.appliedDate,
+    })
+
+    setError('')
+    setShowForm(true)
   }
 
-  setApplications((currentApplications) =>
-    currentApplications.map((application) =>
-      application.id === editingId
-        ? {
-            ...application,
-            company: form.company.trim(),
-            role: form.role.trim(),
-            status: form.status,
-            appliedDate: form.appliedDate,
-          }
-        : application
+  function handleDelete(applicationId) {
+    setApplications((currentApplications) =>
+      currentApplications.filter(
+        (application) => application.id !== applicationId
+      )
     )
-  )
 
-  setEditingId(null)
-  setForm(emptyForm)
-  setError('')
-}
+    setDeletingId(null)
+  }
+
   return (
     <main className="app">
       <header className="header">
         <p className="eyebrow">CAREER DASHBOARD</p>
+
         <h1>Job Application Tracker</h1>
+
         <p className="subtitle">
           Keep track of your applications and follow your progress.
         </p>
       </header>
 
-      <section className="stats" aria-label="Application statistics">
+      <section
+        className="stats"
+        aria-label="Application statistics"
+      >
         <article className="stat-card">
           <span>Total Applications</span>
           <strong>{totalApplications}</strong>
@@ -166,8 +186,10 @@ function handleEdit(application) {
           <button
             type="button"
             onClick={() => {
-              setShowForm(true)
+              setEditingId(null)
+              setForm(emptyForm)
               setError('')
+              setShowForm(true)
             }}
           >
             Add Application
@@ -175,12 +197,26 @@ function handleEdit(application) {
         </div>
 
         {showForm && (
-  <form className="application-form" onSubmit={handleSubmit}>
-            <h2>Add Application</h2>
+          <form
+            className="application-form"
+            onSubmit={handleSubmit}
+          >
+            <h2>
+              {editingId !== null
+                ? 'Edit Application'
+                : 'Add Application'}
+            </h2>
+
+            {error && (
+              <p className="form-error" role="alert">
+                {error}
+              </p>
+            )}
 
             <div className="form-grid">
               <label>
                 Company
+
                 <input
                   name="company"
                   type="text"
@@ -192,7 +228,8 @@ function handleEdit(application) {
               </label>
 
               <label>
-                Job Role
+                Role
+
                 <input
                   name="role"
                   type="text"
@@ -205,6 +242,7 @@ function handleEdit(application) {
 
               <label>
                 Status
+
                 <select
                   name="status"
                   value={form.status}
@@ -219,6 +257,7 @@ function handleEdit(application) {
 
               <label>
                 Applied Date
+
                 <input
                   name="appliedDate"
                   type="date"
@@ -229,122 +268,85 @@ function handleEdit(application) {
               </label>
             </div>
 
-            {error && (
-              <p className="form-error" role="alert">
-                {error}
-              </p>
-            )}
-
             <div className="form-actions">
-              <button type="button" onClick={handleCancel}>
+              <button type="submit">
+                {editingId !== null
+                  ? 'Update Application'
+                  : 'Add Application'}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCancel}
+              >
                 Cancel
               </button>
-              <button type="submit">Save Application</button>
             </div>
           </form>
         )}
 
         <div className="application-list">
-          {editingId !== null && (
-  <form className="application-form" onSubmit={handleUpdate}>
-    <h2>Edit Application</h2>
-
-    <div className="form-grid">
-      <label>
-        Company
-        <input
-          name="company"
-          type="text"
-          value={form.company}
-          onChange={handleInputChange}
-          required
-        />
-      </label>
-
-      <label>
-        Job Role
-        <input
-          name="role"
-          type="text"
-          value={form.role}
-          onChange={handleInputChange}
-          required
-        />
-      </label>
-
-      <label>
-        Status
-        <select
-          name="status"
-          value={form.status}
-          onChange={handleInputChange}
-        >
-          <option value="Applied">Applied</option>
-          <option value="Interview">Interview</option>
-          <option value="Offer">Offer</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-      </label>
-
-      <label>
-        Applied Date
-        <input
-          name="appliedDate"
-          type="date"
-          value={form.appliedDate}
-          onChange={handleInputChange}
-          required
-        />
-      </label>
-    </div>
-
-    {error && (
-      <p className="form-error" role="alert">
-        {error}
-      </p>
-    )}
-
-    <div className="form-actions">
-      <button
-        type="button"
-        onClick={() => {
-          setEditingId(null)
-          setForm(emptyForm)
-          setError('')
-        }}
-      >
-        Cancel
-      </button>
-
-      <button type="submit">Save Changes</button>
-    </div>
-  </form>
-)}
           {applications.map((application) => (
-            <article className="application-card" key={application.id}>
+            <article
+              className="application-card"
+              key={application.id}
+            >
               <div>
                 <h3>{application.role}</h3>
                 <p>{application.company}</p>
               </div>
 
               <div className="application-details">
-  <span
-    className={`status ${application.status.toLowerCase()}`}
-  >
-    {application.status}
-  </span>
+                <span
+                  className={`status ${application.status.toLowerCase()}`}
+                >
+                  {application.status}
+                </span>
 
-  <time dateTime={application.appliedDate}>
-    {application.appliedDate}
-  </time>
+                <time dateTime={application.appliedDate}>
+                  {application.appliedDate}
+                </time>
 
-  <button
-    type="button"
-    onClick={() => handleEdit(application)}
-  >
-    Edit
-  </button>
-</div>
+                <button
+                  type="button"
+                  onClick={() => handleEdit(application)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDeletingId(application.id)
+                  }
+                >
+                  Delete
+                </button>
+              </div>
+
+              {deletingId === application.id && (
+                <div className="delete-confirmation">
+                  <p>Delete this application?</p>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingId(null)}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleDelete(application.id)
+                      }
+                    >
+                      Confirm Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </article>
           ))}
         </div>
