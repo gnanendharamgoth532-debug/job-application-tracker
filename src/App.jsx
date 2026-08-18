@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 const initialApplications = [
@@ -33,12 +33,24 @@ const emptyForm = {
 }
 
 function App() {
-  const [applications, setApplications] = useState(initialApplications)
+  const [applications, setApplications] = useState(() => {
+  const savedApplications = localStorage.getItem('jobApplications')
+
+  if (savedApplications) {
+    return JSON.parse(savedApplications)
+  }
+
+  return initialApplications
+})
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
+  
+  useEffect(() => {
+  localStorage.setItem('jobApplications', JSON.stringify(applications))
+}, [applications])
 
   const totalApplications = applications.length
 
