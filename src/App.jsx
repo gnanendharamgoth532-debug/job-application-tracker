@@ -47,13 +47,26 @@ function App() {
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
-  
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+
   useEffect(() => {
   localStorage.setItem('jobApplications', JSON.stringify(applications))
 }, [applications])
 
   const totalApplications = applications.length
+const filteredApplications = applications.filter((application) => {
+  const searchTerm = search.trim().toLowerCase()
 
+const matchesSearch =
+  application.company.toLowerCase().includes(searchTerm) ||
+  application.role.toLowerCase().includes(searchTerm)
+
+  const matchesStatus =
+    statusFilter === 'All' || application.status === statusFilter
+
+  return matchesSearch && matchesStatus
+})
   const interviews = applications.filter(
     (application) =>
       application.status.toLowerCase() === 'interview'
@@ -298,7 +311,26 @@ function App() {
         )}
 
         <div className="application-list">
-          {applications.map((application) => (
+  <input
+  type="search"
+  placeholder="Search company or role..."
+  value={search}
+  onChange={(event) => setSearch(event.target.value)}
+  aria-label="Search applications"
+/>
+
+<select
+  value={statusFilter}
+  onChange={(event) => setStatusFilter(event.target.value)}
+  aria-label="Filter applications by status"
+>
+  <option value="All">All Statuses</option>
+  <option value="Applied">Applied</option>
+  <option value="Interview">Interview</option>
+  <option value="Offer">Offer</option>
+  <option value="Rejected">Rejected</option>
+</select>
+          {filteredApplications.map((application) => (
             <article
               className="application-card"
               key={application.id}

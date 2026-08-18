@@ -188,7 +188,7 @@ it('edits an application', () => {
       name: 'Update Application',
     })
   )
-  
+
 // Check that the updated application appears
 expect(screen.getByText('TCS')).toBeInTheDocument()
 
@@ -366,5 +366,274 @@ expect(
   screen.getAllByRole('button', {
     name: 'Delete',
   }).length
-).toBeGreaterThan(0)
+  ).toBeGreaterThan(0)
+})
+it('filters applications by status', () => {
+  render(<App />)
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Interview' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('searches applications by company or role', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'Google' },
+  })
+
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('searches applications by role', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'React Developer' },
+  })
+
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+})
+it('searches applications case-insensitively', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'google' },
+  })
+
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('shows no applications when search has no matches', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'NonexistentCompany' },
+  })
+
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('shows all applications when search is cleared', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'Google' },
+  })
+
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+
+  fireEvent.change(searchInput, {
+    target: { value: '' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+})
+it('filters applications by Offer status', () => {
+  render(<App />)
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Offer' },
+  })
+
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+})
+it('filters applications by Applied status', () => {
+  render(<App />)
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Applied' },
+  })
+
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('filters applications by Interview status', () => {
+  render(<App />)
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Interview' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('shows all applications when status filter is reset to All', () => {
+  render(<App />)
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Interview' },
+  })
+
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'All' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+})
+it('combines search and status filters', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  const statusFilter = screen.getByRole('combobox', {
+    name: 'Filter applications by status',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'Google' },
+  })
+
+  fireEvent.change(statusFilter, {
+    target: { value: 'Applied' },
+  })
+
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('searches using a partial company name', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'Mic' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+  expect(screen.queryByText('Amazon')).not.toBeInTheDocument()
+})
+it('searches using a partial role name', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: 'React' },
+  })
+
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+  expect(screen.queryByText('Microsoft')).not.toBeInTheDocument()
+  expect(screen.queryByText('Google')).not.toBeInTheDocument()
+})
+it('ignores whitespace-only searches', () => {
+  render(<App />)
+
+  const searchInput = screen.getByRole('searchbox', {
+    name: 'Search applications',
+  })
+
+  fireEvent.change(searchInput, {
+    target: { value: '   ' },
+  })
+
+  expect(screen.getByText('Microsoft')).toBeInTheDocument()
+  expect(screen.getByText('Google')).toBeInTheDocument()
+  expect(screen.getByText('Amazon')).toBeInTheDocument()
+})
+it('saves applications to localStorage', () => {
+  render(<App />)
+
+  const addButton = screen.getByRole('button', {
+    name: 'Add Application',
+  })
+
+  fireEvent.click(addButton)
+
+  fireEvent.change(screen.getByLabelText('Company'), {
+    target: { value: 'Infosys' },
+  })
+
+  fireEvent.change(screen.getByLabelText('Role'), {
+    target: { value: 'Software Engineer' },
+  })
+
+  fireEvent.change(screen.getByLabelText('Applied Date'), {
+    target: { value: '2026-08-18' },
+  })
+
+ fireEvent.click(
+  screen.getAllByRole('button', {
+    name: 'Add Application',
+  })[1]
+)
+
+  const saved = JSON.parse(localStorage.getItem('jobApplications'))
+
+  expect(saved).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        company: 'Infosys',
+        role: 'Software Engineer',
+        appliedDate: '2026-08-18',
+      }),
+    ])
+  )
 })
