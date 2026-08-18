@@ -383,13 +383,14 @@ const filteredApplications = applications
   type="button"
   disabled={applications.length === 0}
   onClick={() => {
-    const headers = ['Company', 'Role', 'Status', 'Applied Date']
+   const headers = ['Company', 'Role', 'Status', 'Applied Date', 'Notes']
 
- const rows = filteredApplications.map((application) => [
+const rows = filteredApplications.map((application) => [
   application.company,
   application.role,
   application.status,
   application.appliedDate,
+  application.notes || '',
 ])
 
    const escapeCSV = (value) =>
