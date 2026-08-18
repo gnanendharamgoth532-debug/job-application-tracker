@@ -251,3 +251,8 @@ textarea:focus-visible {
   transform: translateY(-2px);
   transition: transform 0.15s ease;
 }
+.modal textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
