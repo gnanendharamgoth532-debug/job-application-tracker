@@ -391,9 +391,12 @@ const filteredApplications = applications
       application.appliedDate,
     ])
 
-    const csv = [headers, ...rows]
-      .map((row) => row.map((value) => `"${value}"`).join(','))
-      .join('\n')
+   const escapeCSV = (value) =>
+  `"${String(value).replace(/"/g, '""')}"`
+
+const csv = [headers, ...rows]
+  .map((row) => row.map(escapeCSV).join(','))
+  .join('\n')
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
