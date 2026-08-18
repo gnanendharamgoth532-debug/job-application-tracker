@@ -30,8 +30,8 @@ const emptyForm = {
   role: '',
   status: 'Applied',
   appliedDate: '',
+  notes: '',
 }
-
 function App() {
   const [applications, setApplications] = useState(() => {
   const savedApplications = localStorage.getItem('jobApplications')
@@ -300,6 +300,17 @@ const filteredApplications = applications
                   required
                 />
               </label>
+              <label>
+  Notes
+  <textarea
+    value={form.notes}
+    onChange={(event) =>
+      setForm({ ...form, notes: event.target.value })
+    }
+    aria-label="Notes"
+    placeholder="Add notes..."
+  />
+</label>
             </div>
 
             <div className="form-actions">
@@ -356,6 +367,11 @@ const filteredApplications = applications
               <div>
                 <h3>{application.role}</h3>
                 <p>{application.company}</p>
+                {application.notes && (
+  <p className="application-notes">
+    {application.notes}
+  </p>
+)}
               </div>
 
               <div className="application-details">
