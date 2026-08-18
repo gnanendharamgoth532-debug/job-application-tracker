@@ -95,7 +95,10 @@ const filteredApplications = applications
   (application) =>
     application.status.toLowerCase() === 'rejected'
 ).length
-
+const interviewRate =
+  totalApplications === 0
+    ? 0
+    : Math.round((interviews / totalApplications) * 100)
   function handleInputChange(event) {
     const { name, value } = event.target
 
@@ -221,6 +224,10 @@ const filteredApplications = applications
         <article className="stat-card">
   <span>Rejected</span>
   <strong>{rejected}</strong>
+</article>
+<article className="stat-card">
+  <span>Interview Rate</span>
+  <strong>{interviewRate}%</strong>
 </article>
       </section>
 
