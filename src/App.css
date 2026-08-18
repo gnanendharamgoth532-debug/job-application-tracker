@@ -1,0 +1,141 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: #666;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  padding: 24px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+}
+
+.stat-card span {
+  display: block;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.stat-card strong {
+  font-size: 2rem;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin: 0;
+}
+
+.section-heading p {
+  margin: 6px 0 0;
+  color: #666;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.application-list {
+  display: grid;
+  gap: 12px;
+}
+
+.application-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+}
+
+.application-card h3 {
+  margin: 0 0 6px;
+}
+
+.application-card p {
+  margin: 0;
+  color: #666;
+}
+
+.application-details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status.applied {
+  background: #eee;
+}
+
+.status.interview {
+  background: #e5e5e5;
+}
+
+.status.offer {
+  background: #dcdcdc;
+}
+
+@media (max-width: 700px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .application-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .application-details {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
