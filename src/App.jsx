@@ -404,7 +404,8 @@ const csv = [headers, ...rows]
     const link = document.createElement('a')
 
     link.href = url
-    link.download = 'job-applications.csv'
+   const date = new Date().toISOString().slice(0, 10)
+link.download = `job-applications-${date}.csv`
     link.click()
 
     URL.revokeObjectURL(url)
