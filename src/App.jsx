@@ -386,7 +386,7 @@ const filteredApplications = applications
   <option value="newest">Newest First</option>
   <option value="oldest">Oldest First</option>
 </select>
-<p className="result-count">
+<p className="result-count" aria-live="polite">
   Showing {filteredApplications.length} of {applications.length} applications
 </p>
 {filteredApplications.length === 0 && (
@@ -470,5 +470,4 @@ const filteredApplications = applications
     </main>
   )
 }
-
 export default App
