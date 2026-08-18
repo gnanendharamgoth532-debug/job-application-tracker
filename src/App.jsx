@@ -358,7 +358,16 @@ const filteredApplications = applications
   <option value="Offer">Offer</option>
   <option value="Rejected">Rejected</option>
 </select>
-
+<button
+  type="button"
+  onClick={() => {
+    setSearch('')
+    setStatusFilter('All')
+    setSortOrder('newest')
+  }}
+>
+  Clear Filters
+</button>
 <select
   value={sortOrder}
   onChange={(event) => setSortOrder(event.target.value)}
@@ -367,6 +376,11 @@ const filteredApplications = applications
   <option value="newest">Newest First</option>
   <option value="oldest">Oldest First</option>
 </select>
+{filteredApplications.length === 0 && (
+  <p className="empty-state">
+    No applications found.
+  </p>
+)}
           {filteredApplications.map((application) => (
             <article
               className="application-card"
