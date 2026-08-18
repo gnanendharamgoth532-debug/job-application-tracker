@@ -381,6 +381,7 @@ const filteredApplications = applications
 </button>
 <button
   type="button"
+  disabled={applications.length === 0}
   onClick={() => {
     const headers = ['Company', 'Role', 'Status', 'Applied Date']
 
@@ -409,7 +410,7 @@ const csv = [headers, ...rows]
     URL.revokeObjectURL(url)
   }}
 >
-  Export CSV
+  <span aria-hidden="true">↓</span> Export CSV
 </button>
 <select
   value={sortOrder}
