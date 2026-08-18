@@ -376,6 +376,9 @@ const filteredApplications = applications
   <option value="newest">Newest First</option>
   <option value="oldest">Oldest First</option>
 </select>
+<p className="result-count">
+  Showing {filteredApplications.length} of {applications.length} applications
+</p>
 {filteredApplications.length === 0 && (
   <p className="empty-state">
     No applications found.
