@@ -391,6 +391,7 @@ const interviewRate =
 </button>
 <button
   type="button"
+  aria-label="Export applications as CSV"
   disabled={applications.length === 0}
   onClick={() => {
    const headers = ['Company', 'Role', 'Status', 'Applied Date', 'Notes']
