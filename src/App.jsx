@@ -385,12 +385,12 @@ const filteredApplications = applications
   onClick={() => {
     const headers = ['Company', 'Role', 'Status', 'Applied Date']
 
-    const rows = applications.map((application) => [
-      application.company,
-      application.role,
-      application.status,
-      application.appliedDate,
-    ])
+ const rows = filteredApplications.map((application) => [
+  application.company,
+  application.role,
+  application.status,
+  application.appliedDate,
+])
 
    const escapeCSV = (value) =>
   `"${String(value).replace(/"/g, '""')}"`
