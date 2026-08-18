@@ -123,3 +123,31 @@ describe('Job Application Tracker', () => {
     ).toBeInTheDocument()
   })
 })
+it('deletes an application', () => {
+  render(<App />)
+
+  // Find the Delete buttons
+  const deleteButtons = screen.getAllByRole('button', {
+    name: 'Delete',
+  })
+
+  // Delete the first application
+  fireEvent.click(deleteButtons[0])
+
+  // Confirmation should appear
+  expect(
+    screen.getByText('Delete this application?')
+  ).toBeInTheDocument()
+
+  // Confirm deletion
+  fireEvent.click(
+    screen.getByRole('button', {
+      name: 'Confirm Delete',
+    })
+  )
+
+  // The confirmation should disappear
+  expect(
+    screen.queryByText('Delete this application?')
+  ).not.toBeInTheDocument()
+})
