@@ -415,6 +415,9 @@ const filteredApplications = applications
                 >
                   {application.status}
                 </span>
+                <span className="updated-date">
+  Applied: {application.appliedDate}
+</span>
 
                 <time dateTime={application.appliedDate}>
                   {application.appliedDate}
