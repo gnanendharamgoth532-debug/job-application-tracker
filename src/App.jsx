@@ -85,6 +85,10 @@ const filteredApplications = applications
     (application) =>
       application.status.toLowerCase() === 'offer'
   ).length
+  const rejected = applications.filter(
+  (application) =>
+    application.status.toLowerCase() === 'rejected'
+).length
 
   function handleInputChange(event) {
     const { name, value } = event.target
@@ -208,6 +212,10 @@ const filteredApplications = applications
           <span>Offers</span>
           <strong>{offers}</strong>
         </article>
+        <article className="stat-card">
+  <span>Rejected</span>
+  <strong>{rejected}</strong>
+</article>
       </section>
 
       <section className="applications">
