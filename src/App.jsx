@@ -351,6 +351,7 @@ const filteredApplications = applications
 />
 <input
   type="date"
+  value={dateFilter}
   aria-label="Filter applications by date"
   onChange={(event) => setDateFilter(event.target.value)}
 />
